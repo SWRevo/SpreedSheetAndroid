@@ -1,18 +1,11 @@
-package id.indosw.spreedsheetandroid.crud;
+package id.indosw.spreedsheetandroid.crud
 
-public class MyDataModel {
-    private String name;
-    private String id;
-    public String getName() {
-        return name;
-    }
-    public void setName(String name) {
-        this.name = name;
-    }
-    public String getId() {
-        return id;
-    }
-    public void setCountry(String id) {
-        this.id=id;
+class MyDataModel {
+    var name: String? = null
+    var id: String? = null
+        private set
+
+    fun setId(id: String?) {
+        this.id = id
     }
 }

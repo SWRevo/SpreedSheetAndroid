@@ -1,77 +1,62 @@
-package id.indosw.spreedsheetandroid.crud;
+@file:Suppress("DEPRECATION")
 
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.util.Log;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.Toast;
+package id.indosw.spreedsheetandroid.crud
 
-import androidx.annotation.Nullable;
-import androidx.appcompat.app.AppCompatActivity;
+import android.annotation.SuppressLint
+import android.app.ProgressDialog
+import android.os.AsyncTask
+import android.os.Bundle
+import android.util.Log
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import id.indosw.spreedsheetandroid.R
+import org.json.JSONException
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import id.indosw.spreedsheetandroid.R;
-
-
-public class DeleteData extends AppCompatActivity {
-
-    String id;
-    private EditText uid1ET;
-
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.delete_data);
-        Button delete = findViewById(R.id.delete_btn);
-        uid1ET= findViewById(R.id.uid);
-
-        delete.setOnClickListener(view -> {
-            id=uid1ET.getText().toString();
-            new DeleteDataActivity().execute();
-        });
+class DeleteData : AppCompatActivity() {
+    var id: String? = null
+    private var uid1ET: EditText? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.delete_data)
+        val delete = findViewById<Button>(R.id.delete_btn)
+        uid1ET = findViewById(R.id.uid)
+        delete.setOnClickListener {
+            id = uid1ET!!.text.toString()
+            DeleteDataActivity().execute()
+        }
     }
 
-    @SuppressWarnings("deprecation")
     @SuppressLint("StaticFieldLeak")
-    class DeleteDataActivity extends AsyncTask<Void, Void, Void> {
-
-        ProgressDialog dialog;
-        String result=null;
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            dialog = new ProgressDialog(DeleteData.this);
-            dialog.setTitle("Hey Wait Please...");
-            dialog.setMessage("Deleting... ");
-            dialog.show();
+    internal inner class DeleteDataActivity : AsyncTask<Void, Void, Void>() {
+        private var dialog: ProgressDialog? = null
+        private var result: String? = null
+        override fun onPreExecute() {
+            super.onPreExecute()
+            dialog = ProgressDialog(this@DeleteData)
+            dialog!!.setTitle("Hey Wait Please...")
+            dialog!!.setMessage("Deleting... ")
+            dialog!!.show()
         }
 
-        @Nullable
-        @Override
-        protected Void doInBackground(Void... params) {
-           Log.i(Controller.TAG,"IDVALUE"+id);
-            JSONObject jsonObject = Controller.deleteData(id);
-            Log.i(Controller.TAG, "Json obj "+jsonObject);
-
+        override fun doInBackground(vararg params: Void): Void? {
+            @Suppress("SpellCheckingInspection")
+            Log.i(Controller.TAG, "IDVALUE$id")
+            val jsonObject = Controller.deleteData(id)
+            Log.i(Controller.TAG, "Json obj $jsonObject")
             try {
                 if (jsonObject != null) {
-                    result=jsonObject.getString("result");
+                    result = jsonObject.getString("result")
                 }
-            } catch (JSONException je) {
-                Log.i(Controller.TAG, "" + je.getLocalizedMessage());
+            } catch (je: JSONException) {
+                Log.i(Controller.TAG, "" + je.localizedMessage)
             }
-            return null;
+            return null
         }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-            dialog.dismiss();
-            Toast.makeText(getApplicationContext(),result,Toast.LENGTH_LONG).show();
+
+        override fun onPostExecute(aVoid: Void?) {
+            super.onPostExecute(aVoid)
+            dialog!!.dismiss()
+            Toast.makeText(applicationContext, result, Toast.LENGTH_LONG).show()
         }
     }
 }

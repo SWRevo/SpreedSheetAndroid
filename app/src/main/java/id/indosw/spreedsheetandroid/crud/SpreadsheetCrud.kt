@@ -1,71 +1,80 @@
-package id.indosw.spreedsheetandroid.crud;
+package id.indosw.spreedsheetandroid.crud
 
-import android.content.Intent;
-import android.os.Bundle;
-import android.widget.Button;
-import android.widget.Toast;
+import android.content.Intent
+import android.os.Build
+import android.os.Bundle
+import android.widget.Button
+import android.widget.Toast
+import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import id.indosw.spreedsheetandroid.R
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import id.indosw.spreedsheetandroid.R;
-
-public class SpreadsheetCrud extends AppCompatActivity {
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.spreadsheet_crud);
-        Button read = findViewById(R.id.read_btn);
-        Button readAll = findViewById(R.id.read_all_btn);
-        Button insert = findViewById(R.id.insert_btn);
-        Button update = findViewById(R.id.update_btn);
-        Button delete = findViewById(R.id.delete_btn);
-
-        readAll.setOnClickListener(view -> {
-            if (InternetConnection.checkConnection(getApplicationContext())) {
-                Intent intent=new Intent(getApplicationContext(),ReadAllData.class);
-                startActivity(intent);
+class SpreadsheetCrud : AppCompatActivity() {
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.spreadsheet_crud)
+        val read = findViewById<Button>(R.id.read_btn)
+        val readAll = findViewById<Button>(R.id.read_all_btn)
+        val insert = findViewById<Button>(R.id.insert_btn)
+        val update = findViewById<Button>(R.id.update_btn)
+        val delete = findViewById<Button>(R.id.delete_btn)
+        readAll.setOnClickListener {
+            if (InternetConnection.checkConnection(applicationContext)) {
+                val intent = Intent(applicationContext, ReadAllData::class.java)
+                startActivity(intent)
             } else {
-                Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Check your internet connection",
+                    Toast.LENGTH_LONG).show()
             }
-        });
-
-        insert.setOnClickListener(view -> {
-            if (InternetConnection.checkConnection(getApplicationContext())) {
-                Intent intent=new Intent(getApplicationContext(),InsertData.class);
-                startActivity(intent);
+        }
+        insert.setOnClickListener {
+            if (InternetConnection.checkConnection(applicationContext)) {
+                val intent = Intent(applicationContext, InsertData::class.java)
+                startActivity(intent)
             } else {
-                Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Check your internet connection",
+                    Toast.LENGTH_LONG).show()
             }
-        });
-
-
-        update.setOnClickListener(view -> {
-            if (InternetConnection.checkConnection(getApplicationContext())) {
-                Intent intent=new Intent(getApplicationContext(),UpdateData.class);
-                startActivity(intent);
+        }
+        update.setOnClickListener {
+            if (InternetConnection.checkConnection(applicationContext)) {
+                val intent = Intent(applicationContext, UpdateData::class.java)
+                startActivity(intent)
             } else {
-                Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Check your internet connection",
+                    Toast.LENGTH_LONG).show()
             }
-        });
-
-
-        read.setOnClickListener(view -> {
-            if (InternetConnection.checkConnection(getApplicationContext())) {
-                Intent intent=new Intent(getApplicationContext(),ReadSingleData.class);
-                startActivity(intent);
+        }
+        read.setOnClickListener {
+            if (InternetConnection.checkConnection(
+                    applicationContext)) {
+                val intent = Intent(applicationContext, ReadSingleData::class.java)
+                startActivity(intent)
             } else {
-                Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Check your internet connection",
+                    Toast.LENGTH_LONG).show()
             }
-        });
-
-        delete.setOnClickListener(view -> {
-            if (InternetConnection.checkConnection(getApplicationContext())) {
-                Intent intent=new Intent(getApplicationContext(),DeleteData.class);
-                startActivity(intent);
+        }
+        delete.setOnClickListener {
+            if (InternetConnection.checkConnection(
+                    applicationContext)) {
+                val intent = Intent(applicationContext, DeleteData::class.java)
+                startActivity(intent)
             } else {
-                Toast.makeText(getApplicationContext(), "Check your internet connection", Toast.LENGTH_LONG).show();
+                Toast.makeText(
+                    applicationContext,
+                    "Check your internet connection",
+                    Toast.LENGTH_LONG).show()
             }
-        });
+        }
     }
 }

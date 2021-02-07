@@ -1,16 +1,15 @@
-package id.indosw.spreedsheetandroid.crud;
+package id.indosw.spreedsheetandroid.crud
 
-import android.content.Context;
-import android.net.ConnectivityManager;
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
+import androidx.annotation.RequiresApi
 
-import androidx.annotation.NonNull;
-
-
-public class InternetConnection {
-
-    /** CHECK WHETHER INTERNET CONNECTION IS AVAILABLE OR NOT */
-    public static boolean checkConnection(@NonNull Context context) {
-        return  ((ConnectivityManager) context.getSystemService
-                (Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+object InternetConnection {
+    /** CHECK WHETHER INTERNET CONNECTION IS AVAILABLE OR NOT  */
+    @RequiresApi(Build.VERSION_CODES.M)
+    fun checkConnection(context: Context): Boolean {
+        return (context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager).activeNetwork !=null
+        //activeNetworkInfo != null
     }
 }

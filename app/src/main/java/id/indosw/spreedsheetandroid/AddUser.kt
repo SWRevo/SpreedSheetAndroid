@@ -1,140 +1,135 @@
-package id.indosw.spreedsheetandroid;
+@file:Suppress("DEPRECATION", "PrivatePropertyName")
 
-import android.app.ProgressDialog;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
-import android.provider.MediaStore;
-import android.util.Base64;
-import android.util.Log;
-import android.view.View;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ImageView;
-import android.widget.Toast;
+package id.indosw.spreedsheetandroid
 
-import androidx.appcompat.app.AppCompatActivity;
+import android.app.ProgressDialog
+import android.content.Intent
+import android.graphics.Bitmap
+import android.os.Bundle
+import android.provider.MediaStore
+import android.util.Base64
+import android.util.Log
+import android.view.View
+import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import com.android.volley.*
+import com.android.volley.toolbox.StringRequest
+import com.android.volley.toolbox.Volley
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import java.util.*
 
-import com.android.volley.DefaultRetryPolicy;
-import com.android.volley.Request;
-import com.android.volley.RequestQueue;
-import com.android.volley.RetryPolicy;
-import com.android.volley.toolbox.StringRequest;
-import com.android.volley.toolbox.Volley;
-
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-
-import static id.indosw.spreedsheetandroid.Configuration.ADD_USER_URL;
-import static id.indosw.spreedsheetandroid.Configuration.KEY_ACTION;
-import static id.indosw.spreedsheetandroid.Configuration.KEY_ID;
-import static id.indosw.spreedsheetandroid.Configuration.KEY_IMAGE;
-import static id.indosw.spreedsheetandroid.Configuration.KEY_NAME;
-
-public class AddUser extends AppCompatActivity implements View.OnClickListener {
-
-    private EditText editTextUserName;
-    private EditText editTextUserId;
-    private ImageView imageViewUserImage;
-    private Button buttonAddUser,buttonAddImage;
-    String userImage;
-    private final int PICK_IMAGE_REQUEST = 1;
-    Bitmap rBitmap;
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_user);
-        editTextUserId = findViewById(R.id.et_uid);
-        editTextUserName = findViewById(R.id.et_uname);
-        imageViewUserImage= findViewById(R.id.iv_uphoto);
-        buttonAddUser = findViewById(R.id.btn_add_user);
-        buttonAddImage = findViewById(R.id.btn_image);
-        buttonAddImage.setOnClickListener(this);
-        buttonAddUser.setOnClickListener(this);
+@Suppress("SameParameterValue")
+class AddUser : AppCompatActivity(), View.OnClickListener {
+    private var editTextUserName: EditText? = null
+    private var editTextUserId: EditText? = null
+    private var imageViewUserImage: ImageView? = null
+    private var buttonAddUser: Button? = null
+    private var buttonAddImage: Button? = null
+    var userImage: String? = null
+    private val PICK_IMAGE_REQUEST = 1
+    private var rBitmap: Bitmap? = null
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.add_user)
+        editTextUserId = findViewById(R.id.et_uid)
+        editTextUserName = findViewById(R.id.et_uname)
+        imageViewUserImage = findViewById(R.id.iv_uphoto)
+        buttonAddUser = findViewById(R.id.btn_add_user)
+        buttonAddImage = findViewById(R.id.btn_image)
+        buttonAddImage!!.setOnClickListener(this)
+        buttonAddUser!!.setOnClickListener(this)
     }
-    public Bitmap getResizedBitmap(Bitmap image, int maxSize) {
-        int width = image.getWidth();
-        int height = image.getHeight();
-        float bitmapRatio = (float)width / (float) height;
+
+    private fun getResizedBitmap(image: Bitmap, maxSize: Int): Bitmap {
+        var width = image.width
+        var height = image.height
+        val bitmapRatio = width.toFloat() / height.toFloat()
         if (bitmapRatio > 1) {
-            width = maxSize;
-            height = (int) (width / bitmapRatio);
+            width = maxSize
+            height = (width / bitmapRatio).toInt()
         } else {
-            height = maxSize;
-            width = (int) (height * bitmapRatio);
+            height = maxSize
+            width = (height * bitmapRatio).toInt()
         }
-        return Bitmap.createScaledBitmap(image, width, height, true);
+        return Bitmap.createScaledBitmap(image, width, height, true)
     }
-    public String getStringImage(Bitmap bmp) {
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bmp.compress(Bitmap.CompressFormat.JPEG, 100, baos);
-        byte[] imageBytes = baos.toByteArray();
-        return Base64.encodeToString(imageBytes, Base64.DEFAULT);
-    }
-    private void addUser(){
-        final ProgressDialog loading = ProgressDialog.show(this,"Uploading...","Please wait...",false,false);
-        final String userId = editTextUserId.getText().toString().trim();
-        final String userName = editTextUserName.getText().toString().trim();
-        //Bitmap  rbitmap = getResizedBitmap(bitmap,500);
-        Log.e("null","values"+userImage);
-        StringRequest stringRequest = new StringRequest(Request.Method.POST,ADD_USER_URL,
-                response -> {
-                    loading.dismiss();
-                    Toast.makeText(AddUser.this,response,Toast.LENGTH_LONG).show();
-                },
-                error -> Toast.makeText(AddUser.this,error.toString(),Toast.LENGTH_LONG).show()){
-            @Override
-            protected Map<String,String> getParams(){
-                Map<String,String> params = new HashMap<>();
-                params.put(KEY_ACTION,"insert");
-                params.put(KEY_ID,userId);
-                params.put(KEY_NAME,userName);
-                params.put(KEY_IMAGE,userImage);
 
-                return params;
+    private fun getStringImage(bmp: Bitmap?): String {
+        val baos = ByteArrayOutputStream()
+        bmp!!.compress(Bitmap.CompressFormat.JPEG, 100, baos)
+        val imageBytes = baos.toByteArray()
+        return Base64.encodeToString(imageBytes, Base64.DEFAULT)
+    }
+
+    private fun addUser() {
+        val loading = ProgressDialog.show(this, "Uploading...", "Please wait...", false, false)
+        val userId = editTextUserId!!.text.toString().trim { it <= ' ' }
+        val userName = editTextUserName!!.text.toString().trim { it <= ' ' }
+        //Bitmap  rbitmap = getResizedBitmap(bitmap,500);
+        Log.e("null", "values$userImage")
+        val stringRequest: StringRequest = object : StringRequest(
+            Method.POST, Configuration.ADD_USER_URL,
+            Response.Listener { response: String? ->
+                loading.dismiss()
+                Toast.makeText(this@AddUser, response, Toast.LENGTH_LONG).show()
+            },
+            Response.ErrorListener { error: VolleyError ->
+                Toast.makeText(
+                    this@AddUser,
+                    error.toString(),
+                    Toast.LENGTH_LONG
+                ).show()
+            }) {
+            override fun getParams(): Map<String, String> {
+                val params: MutableMap<String, String> = HashMap()
+                params[Configuration.KEY_ACTION] = "insert"
+                params[Configuration.KEY_ID] = userId
+                params[Configuration.KEY_NAME] = userName
+                params[Configuration.KEY_IMAGE] = userImage!!
+                return params
             }
-        };
-        int socketTimeout = 30000; // 30 seconds. You can change it
-        RetryPolicy policy = new DefaultRetryPolicy(socketTimeout,
-                DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
-                DefaultRetryPolicy.DEFAULT_BACKOFF_MULT);
-        stringRequest.setRetryPolicy(policy);
-        RequestQueue requestQueue = Volley.newRequestQueue(this);
-        requestQueue.add(stringRequest);
+        }
+        val socketTimeout = 30000 // 30 seconds. You can change it
+        val policy: RetryPolicy = DefaultRetryPolicy(
+            socketTimeout,
+            DefaultRetryPolicy.DEFAULT_MAX_RETRIES,
+            DefaultRetryPolicy.DEFAULT_BACKOFF_MULT
+        )
+        stringRequest.retryPolicy = policy
+        val requestQueue = Volley.newRequestQueue(this)
+        requestQueue.add(stringRequest)
     }
-    private void showFileChooser() {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST);
+
+    private fun showFileChooser() {
+        val intent = Intent()
+        intent.type = "image/*"
+        intent.action = Intent.ACTION_GET_CONTENT
+        startActivityForResult(Intent.createChooser(intent, "Select Picture"), PICK_IMAGE_REQUEST)
     }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.getData() != null) {
-            Uri filePath = data.getData();
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == PICK_IMAGE_REQUEST && resultCode == RESULT_OK && data != null && data.data != null) {
+            val filePath = data.data
             try {
                 //Getting the Bitmap from Gallery
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), filePath);
-                rBitmap = getResizedBitmap(bitmap,250);//Setting the Bitmap to ImageView
-                userImage = getStringImage(rBitmap);
-                imageViewUserImage.setImageBitmap(rBitmap);
-            } catch (IOException e) {
-                e.printStackTrace();
+                val bitmap = MediaStore.Images.Media.getBitmap(contentResolver, filePath)
+                rBitmap = getResizedBitmap(bitmap, 250) //Setting the Bitmap to ImageView
+                userImage = getStringImage(rBitmap)
+                imageViewUserImage!!.setImageBitmap(rBitmap)
+            } catch (e: IOException) {
+                e.printStackTrace()
             }
         }
     }
-    @Override
-    public void onClick(View v) {
-        if(v == buttonAddUser){
-            addUser();
+
+    override fun onClick(v: View) {
+        if (v === buttonAddUser) {
+            addUser()
         }
-        if(v == buttonAddImage){
-            showFileChooser();
+        if (v === buttonAddImage) {
+            showFileChooser()
         }
     }
 }
